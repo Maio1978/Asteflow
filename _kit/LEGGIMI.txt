@@ -1,0 +1,7 @@
+Aste Flow - kit di aggiornamento (usato dall'attività programmata settimanale di Claude)
+- scarica.js       : script eseguito nel browser su pvp.giustizia.it per scaricare le aste
+- aggiorna.py      : ricostruisce la pagina e i file per regione
+- template.html    : modello della pagina pubblica Aste Flow
+- omi_lite.sqlite.gz : quotazioni OMI 1° semestre 2026 (Agenzia delle Entrate) con le zone
+Pagina pubblicata: https://claude.ai/artifact/M4yULowzjiEndyqBhawAJ2  (link corto tinyurl.com/asteflow)
+Non cancellare questa cartella: senza questi file l'aggiornamento automatico si ferma.

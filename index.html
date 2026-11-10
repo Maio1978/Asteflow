@@ -94,6 +94,14 @@ details{font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--bra
 .tb label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
 .tb input,.tb select{width:100%;font:500 16px var(--font);color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;min-height:46px}
 @media (max-width:560px){.wz .ops.gr .op{font-size:14px}}
+.omi{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.omi.ok{border-color:var(--ok);background:var(--okbg)}
+.omi .oh{margin:0;font-size:13.5px;font-weight:650;color:var(--ink)}
+.omi .og{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px}
+.omi .og b{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.omi .og span{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
+.omi .ot{margin:0;font-size:13.5px;color:var(--ink)}
+.omi.ok .ot,.omi.ok .oh{color:var(--ok)}
 </style>
 </head><body>
 
@@ -116,7 +124,7 @@ details{font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--bra
   <div id="list" class="w" style="gap:12px"></div>
   <button class="more" id="more" type="button" hidden>Mostra altre aste</button>
  </div>
- <div class="foot">Dati dal Portale delle Vendite Pubbliche del Ministero della Giustizia, aggiornati al 10/11/2026. Il valore di zona è la quotazione OMI dell'Agenzia delle Entrate (1° semestre 2026) per la superficie indicata nell'annuncio. Prima di offrire leggi sempre la perizia: te la spiego io.<br>WhatsApp: <span style="user-select:all;font-weight:600">327 213 4718</span></div>
+ <div class="foot">Dati dal Portale delle Vendite Pubbliche del Ministero della Giustizia, aggiornati al 10/11/2026. I valori OMI sono le quotazioni dell'Agenzia delle Entrate (1° semestre 2026, abitazioni civili in stato normale) della zona in cui si trova la casa; se l'annuncio non dà la posizione esatta, mostriamo l'intervallo del comune. Prima di offrire leggi sempre la perizia: te la spiego io.<br>WhatsApp: <span style="user-select:all;font-weight:600">327 213 4718</span></div>
 </div>
 <script>
 const IDX={"Sicilia": {"f": "italia/sicilia.json", "n": 1217, "prov": ["Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani"]}, "Piemonte": {"f": "italia/piemonte.json", "n": 720, "prov": ["Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli"]}, "Toscana": {"f": "italia/toscana.json", "n": 605, "prov": ["Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa-Carrara", "Pisa", "Pistoia", "Prato", "Siena"]}, "Emilia-Romagna": {"f": "italia/emilia-romagna.json", "n": 261, "prov": ["Bologna", "Ferrara", "Forlì-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio Emilia", "Rimini"]}, "Marche": {"f": "italia/marche.json", "n": 452, "prov": ["Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino"]}, "Puglia": {"f": "italia/puglia.json", "n": 602, "prov": ["Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto"]}, "Abruzzo": {"f": "italia/abruzzo.json", "n": 299, "prov": ["Chieti", "L'Aquila", "Pescara", "Teramo"]}, "Valle d'Aosta": {"f": "italia/valle-d-aosta.json", "n": 18, "prov": ["Aosta"]}, "Campania": {"f": "italia/campania.json", "n": 581, "prov": ["Avellino", "Benevento", "Caserta", "Napoli", "Salerno"]}, "Veneto": {"f": "italia/veneto.json", "n": 347, "prov": ["Belluno", "Padova", "Rovigo", "Treviso", "Venezia", "Verona", "Vicenza"]}, "Lombardia": {"f": "italia/lombardia.json", "n": 817, "prov": ["Bergamo", "Brescia", "Como", "Cremona", "Lecco", "Lodi", "Mantova", "Milano", "Monza e della Brianza", "Pavia", "Sondrio", "Varese"]}, "Liguria": {"f": "italia/liguria.json", "n": 145, "prov": ["Genova", "Imperia", "La Spezia", "Savona"]}, "Sardegna": {"f": "italia/sardegna.json", "n": 272, "prov": ["Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna"]}, "Lazio": {"f": "italia/lazio.json", "n": 795, "prov": ["Frosinone", "Latina", "Rieti", "Roma", "Viterbo"]}, "Molise": {"f": "italia/molise.json", "n": 52, "prov": ["Campobasso", "Isernia"]}, "Calabria": {"f": "italia/calabria.json", "n": 534, "prov": ["Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia"]}, "Friuli-Venezia Giulia": {"f": "italia/friuli-venezia-giulia.json", "n": 41, "prov": ["Gorizia", "Pordenone", "Trieste", "Udine"]}, "Basilicata": {"f": "italia/basilicata.json", "n": 145, "prov": ["Matera", "Potenza"]}, "Trentino-Alto Adige": {"f": "italia/trentino-alto-adige.json", "n": 35, "prov": ["Trento"]}, "Umbria": {"f": "italia/umbria.json", "n": 233, "prov": ["Perugia", "Terni"]}};const NUM="393272134718";let A=[];const cache={};
@@ -163,11 +171,20 @@ function punti(a,g){const P=[],N=[];const sc=sconto(a);
  if(!a.s)N.push('Stato di occupazione da leggere in perizia');
  if(g<=10)N.push(`Mancano solo ${g} giorni per l'offerta`);
  return `<div class="pv"><div class="pos"><b>A favore</b>${P.length?`<ul>${P.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'Da valutare con la perizia'}</div><div class="neg"><b>Da verificare</b>${N.length?`<ul>${N.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'Nulla di evidente dall\'annuncio: confermiamo in perizia'}</div></div>`}
+const dec=n=>String(n).replace('.',',');
+const tc=s=>String(s||'').toLowerCase().replace(/`/g,"'").replace(/(^|[\s(\-'])([a-zà-ù])/g,(m,p,c)=>p+c.toUpperCase());
+function omibox(a,sc,mqp){const w=a.w;if(!w)return '';
+ const tit=w.t==='z'?`Valori OMI · zona ${esc(w.z)}${w.zd?' – '+esc(tc(w.zd)):''}`:`Valori OMI nel comune di ${esc(a.c)} <span style="font-weight:500">(zona esatta in perizia)</span>`;
+ const rows=[`<div><b>Compravendita</b><span>${mil(w.a)}–${mil(w.b)} €/mq</span></div>`];
+ if(w.la&&w.lb)rows.push(`<div><b>Affitto</b><span>${dec(w.la)}–${dec(w.lb)} €/mq al mese</span></div>`);
+ if(mqp)rows.push(`<div><b>Offerta minima</b><span>${mil(mqp)} €/mq</span></div>`);
+ const fondo=a.o?`<p class="ot">Per ${dec(a.q)} mq la zona vale circa <b>${eur(a.o)}</b>${sc>0?` · l'offerta minima è il <b>${sc}% sotto</b>`:''}</p>`:(a.q?'':`<p class="ot">Con i metri quadri della perizia calcoliamo il valore della casa.</p>`);
+ return `<div class="omi${sc>0?' ok':''}"><p class="oh">${tit}</p><div class="og">${rows.join('')}</div>${fondo}</div>`}
 function card(a){const g=giorni(a.d);const st=a.s==='Libero'?'lib':(a.s?'occ':'');const sc=sconto(a);const rib=a.b&&a.m?Math.round((1-a.m/a.b)*100):null;
  const mqp=a.q&&a.m?Math.round(a.m/a.q):null;
  return `<article class="c"><div class="top"><div><h2>${esc(a.v||'Indirizzo nell\'annuncio')}</h2><span class="loc">${esc(a.c==='Roma'&&a.z?'Roma · '+a.z:a.c)}${a.p&&a.p!==a.c?' ('+esc(a.p)+')':''} · Tribunale di ${esc(a.t)}</span></div>${a.s?`<span class="tag ${st}">${esc(a.s)}</span>`:''}</div>
  <div class="px"><div><b>Offerta minima</b><span class="big">${eur(a.m)}</span>${mqp?`<small>${mil(mqp)} €/mq</small>`:''}</div><div><b>Prezzo base</b><span>${eur(a.b)}</span>${rib?`<small>minima −${rib}%</small>`:''}</div><div><b>Cauzione</b><span>${eur(a.m*0.1)}</span><small>10% dell'offerta minima</small></div></div>
- ${a.o?`<div class="disc${sc>0?'':' no'}">Valore OMI della zona per ${String(a.q).replace('.',',')} mq: circa ${eur(a.o)}${sc>0?` · l'offerta minima è il ${sc}% sotto`:''}</div>`:''}
+ ${omibox(a,sc,mqp)}
  <div class="g"><div><b>Superficie</b><span>${a.q?String(a.q).replace('.',',')+' mq':'in perizia'}</span></div><div><b>${a.k!=null||a.n==null?'Camere':'Vani'}</b><span>${a.k!=null?a.k:a.n!=null?String(a.n).replace('.',','):'in perizia'}</span>${a.k==null&&a.n!=null?'<small style="display:block;font-size:12px;color:var(--muted)">dal catasto, camere in perizia</small>':''}</div><div><b>Data asta</b><span>${dt(a.d)}</span></div><div><b>Offerte entro</b><span>${prima(a.d)}</span><small style="display:block;font-size:12px;color:var(--muted)">tra ${g} giorni</small></div></div>
  ${punti(a,g)}
  ${a.s?`<p class="note"><b>Stato:</b> ${esc(SPIEGA[a.s]||a.s)}</p>`:''}
