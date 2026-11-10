@@ -70,6 +70,30 @@ details{font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--bra
 .pv ul{margin:0;padding-left:16px}
 @media (max-width:560px){.pv{grid-template-columns:1fr}}
 @media (max-width:560px){.f{grid-template-columns:1fr}.g{grid-template-columns:1fr 1fr}.px{grid-template-columns:1fr 1fr}.px div:first-child{grid-column:1/-1}}
+
+.wz{background:var(--card);border-radius:20px;padding:18px 16px 16px;box-shadow:0 2px 14px rgba(20,32,43,.08)}
+.wz .bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden}.wz .bar i{display:block;height:100%;background:#e8a33d;border-radius:6px;transition:width .25s}
+.wz small.k{display:block;margin-top:14px;font-weight:700;color:var(--brand);letter-spacing:.08em;font-size:12px}
+.wz h2{font-size:25px;line-height:1.15;margin:6px 0 8px;font-weight:700}
+.wz .inf{margin:0 0 14px;color:var(--muted);font-size:14.5px;line-height:1.45}
+.wz .ops{display:grid;gap:8px}.wz .ops.gr{grid-template-columns:1fr 1fr}
+.wz .op{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:13px 14px;font:600 16px/1.25 var(--font);cursor:pointer}
+.wz .ops.gr .op{font-size:15px;padding:11px 12px}
+.wz .op span{color:var(--muted);font-weight:500;font-size:13px;white-space:nowrap}
+.wz .op[aria-pressed="true"]{border-color:var(--brand);background:var(--brand2)}
+.wz .op:disabled{opacity:.45;cursor:default}
+.wz .nav{display:flex;gap:10px;margin-top:14px}
+.wz .nav button{flex:1;padding:14px;border-radius:14px;font:700 16px var(--font);cursor:pointer;border:0;background:var(--brand);color:var(--on)}
+.wz .nav button.bk{flex:0 0 34%;background:var(--card);color:var(--ink);border:1.5px solid var(--line);font-weight:600}
+.wz .skip{display:block;margin:12px auto 0;background:none;border:0;color:var(--brand);font:600 14px var(--font);text-decoration:underline;cursor:pointer}
+.rs h3{margin:0 0 8px;font-size:15px;color:var(--muted);font-weight:600}
+.rs .chips{display:flex;flex-wrap:wrap;gap:8px}
+.rs .chips button{border:1.5px solid var(--line);background:var(--brand2);color:var(--ink);border-radius:999px;padding:8px 12px;font:600 14px var(--font);cursor:pointer}
+.rs .chips button:after{content:" ✎";color:var(--brand)}
+.tb{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tb label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.tb input,.tb select{width:100%;font:500 16px var(--font);color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;min-height:46px}
+@media (max-width:560px){.wz .ops.gr .op{font-size:14px}}
 </style>
 </head><body>
 
@@ -77,29 +101,21 @@ details{font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--bra
  <header>
   <p class="ey">Aste Flow · Maurizio Basciani</p>
   <h1>Case all'asta in tutta Italia</h1>
-  <p class="lead">Tutte le abitazioni in vendita all'asta nei tribunali italiani con offerte ancora aperte. Scegli regione, zona e budget: quando una casa ti interessa, scrivimi e ti dico cosa c'è nella perizia.</p>
+  <p class="lead">Tutte le abitazioni in vendita all'asta nei tribunali italiani con offerte ancora aperte. Rispondi a 5 domande veloci e trovi le case adatte a te: quando una ti interessa, scrivimi e ti dico cosa c'è nella perizia.</p>
  </header>
- <form class="f" id="f" onsubmit="return false">
-  <div class="step"><span class="num">1</span><h3>Dove cerchi casa</h3>
-   <p class="info">Le aste sono organizzate dai tribunali. Scegli la regione e poi, se vuoi, la provincia. A Roma puoi scegliere anche il quadrante della città.</p>
-   <div class="ctl"><label for="reg">Regione<select id="reg"></select></label><label for="zona">Provincia o zona<select id="zona"></select></label></div></div>
-  <div class="step"><span class="num">2</span><h3>Quanto puoi offrire</h3>
-   <p class="info">Filtriamo sull'<b>offerta minima</b>, cioè il prezzo più basso che il giudice accetta (di solito il 75% del prezzo base). Con l'offerta si versa una cauzione, di norma il 10% di quanto offri. Se ti serve il mutuo, conviene verificare prima quanto ti finanzia la banca: lo facciamo insieme.</p>
-   <div class="ctl one"><label for="budget">Offerta massima<select id="budget"><option value="0">Qualsiasi cifra</option><option value="50000">Fino a 50.000 €</option><option value="80000">Fino a 80.000 €</option><option value="130000">Fino a 130.000 €</option><option value="160000" selected>Fino a 160.000 €</option><option value="200000">Fino a 200.000 €</option><option value="300000">Fino a 300.000 €</option><option value="500000">Fino a 500.000 €</option></select></label></div></div>
-  <div class="step"><span class="num">3</span><h3>Quante camere ti servono</h3>
-   <p class="info">Le camere sono lette dalla descrizione dell'annuncio. Se l'annuncio non le indica, la casa resta nell'elenco: le verifichiamo nella perizia.</p>
-   <div class="ch" role="group" aria-label="Camere"><button type="button" data-k="0" aria-pressed="true">Tutte</button><button type="button" data-k="1" aria-pressed="false">1+</button><button type="button" data-k="2" aria-pressed="false">2+</button><button type="button" data-k="3" aria-pressed="false">3+</button></div></div>
-  <div class="step"><span class="num">4</span><h3>Libera o occupata</h3>
-   <p class="info"><b>Libera</b>: entri in casa dopo il trasferimento della proprietà. <b>Occupata</b> o <b>in liberazione</b>: lo sgombero lo cura il custode del tribunale, ma i tempi possono allungarsi di alcuni mesi. Molti annunci non lo dicono: lo leggiamo in perizia.</p>
-   <div class="ctl one"><label for="stato">Stato della casa<select id="stato"><option value="">Tutte</option><option value="lib">Solo libere</option><option value="noocc">Escludi occupate senza titolo</option></select></label></div></div>
-  <div class="step"><span class="num">5</span><h3>Ordina e cerca</h3>
-   <p class="info">Puoi vedere prima le aste più vicine, le più economiche o quelle con lo sconto più alto rispetto al valore OMI della zona (l'indicatore dell'Agenzia delle Entrate).</p>
-   <div class="ctl"><label for="ord">Ordina per<select id="ord"><option value="d">Data dell'asta</option><option value="m">Prezzo più basso</option><option value="s">Sconto sul valore OMI</option></select></label><label for="q">Via, comune o tribunale<input id="q" type="search" placeholder="Es. Aprilia"></label></div></div>
+ <section class="wz" id="wz" aria-live="polite"></section>
+ <form id="f" hidden onsubmit="return false">
+  <select id="reg"></select><select id="zona"></select>
+  <select id="budget"><option value="0" selected>Qualsiasi cifra</option><option value="50000">Fino a 50.000 €</option><option value="80000">Fino a 80.000 €</option><option value="130000">Fino a 130.000 €</option><option value="160000">Fino a 160.000 €</option><option value="200000">Fino a 200.000 €</option><option value="300000">Fino a 300.000 €</option><option value="500000">Fino a 500.000 €</option></select>
+  <select id="stato"><option value="">Tutte</option><option value="lib">Solo libere</option><option value="noocc">Escludi occupate senza titolo</option></select>
  </form>
- <div class="sum" id="sum" aria-live="polite"></div>
- <p class="cnt" id="cnt"></p>
- <div id="list" class="w" style="gap:12px"></div>
- <button class="more" id="more" type="button" hidden>Mostra altre aste</button>
+ <div id="res" class="w" hidden>
+  <div class="tb"><label for="q">Cerca via o comune<input id="q" type="search" placeholder="Es. Aprilia"></label><label for="ord">Ordina per<select id="ord"><option value="d">Data dell'asta</option><option value="m">Prezzo più basso</option><option value="s">Sconto sul valore OMI</option></select></label></div>
+  <div class="sum" id="sum"></div>
+  <p class="cnt" id="cnt"></p>
+  <div id="list" class="w" style="gap:12px"></div>
+  <button class="more" id="more" type="button" hidden>Mostra altre aste</button>
+ </div>
  <div class="foot">Dati dal Portale delle Vendite Pubbliche del Ministero della Giustizia, aggiornati al 10/11/2026. Il valore di zona è la quotazione OMI dell'Agenzia delle Entrate (1° semestre 2026) per la superficie indicata nell'annuncio. Prima di offrire leggi sempre la perizia: te la spiego io.<br>WhatsApp: <span style="user-select:all;font-weight:600">327 213 4718</span></div>
 </div>
 <script>
@@ -119,11 +135,11 @@ function zone(){const r=rs.value;let Z=[['tutte','Tutta la regione']];
 async function carica(){const r=rs.value;zone();document.getElementById('cnt').textContent='Carico le aste…';document.getElementById('list').innerHTML='';
  try{if(!cache[r]){const x=await fetch(IDX[r].f);if(!x.ok)throw 0;cache[r]=pulisci(await x.json())}A=cache[r];render(true)}
  catch(e){document.getElementById('cnt').textContent='';document.getElementById('list').innerHTML=`<div class="empty">Non riesco a caricare le aste di questa regione. Riprova tra poco o <a href="${wa('Ciao Maurizio, cerco casa all\'asta in '+r+'. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`}}
-let K=0,shown=20;
+var K=0;let shown=20;
 const sconto=a=>a.o&&a.m?Math.round((1-a.m/a.o)*100):null;
 function pulisci(L){L.forEach(a=>{const s=sconto(a);if(s!=null&&(s>60||s<-80))a.o=null});return L}
 const SPIEGA={'Libero':'La casa risulta libera: dopo il trasferimento puoi entrare.','Occupato':'La casa risulta occupata: va verificato in perizia se con un contratto valido o meno.','Occupato senza titolo':'Occupata senza contratto valido: la libera il custode del tribunale.','In liberazione':'Il custode sta già liberando la casa.'};
-function match(a){const z=zs.value,b=+document.getElementById('budget').value,q=document.getElementById('q').value.trim().toLowerCase(),st=document.getElementById('stato').value;
+function match(a,o={}){const z=o.zona??zs.value,b=o.budget??+document.getElementById('budget').value,q=o.noq?'':document.getElementById('q').value.trim().toLowerCase(),st=o.stato??document.getElementById('stato').value,K=o.K??window.K;
  if(b&&a.m>b)return false;
  if(z!=='tutte'){if(z.startsWith('prov:')){const p=z.slice(5);if(a.p!==p)return false;if(p==='Roma'&&a.c==='Roma'&&rs.value==='Lazio')return false}else if(a.z!==z)return false}
  if(K&&a.k!=null&&a.k<K)return false;
@@ -161,16 +177,44 @@ function card(a){const g=giorni(a.d);const st=a.s==='Libero'?'lib':(a.s?'occ':''
 function render(reset){if(reset)shown=20;let r=A.filter(match);const o=document.getElementById('ord').value;
  r=r.slice().sort(o==='m'?(x,y)=>x.m-y.m:o==='s'?(x,y)=>(sconto(y)??-999)-(sconto(x)??-999):(x,y)=>x.d.localeCompare(y.d));
  const b=+document.getElementById('budget').value,st=document.getElementById('stato').value,zt=zs.options[zs.selectedIndex]?.text||'';
- document.getElementById('sum').innerHTML=`Stai cercando in <b>${esc(rs.value)}</b>${zs.value!=='tutte'?` · <b>${esc(zt)}</b>`:''} · ${b?`offerta fino a <b>${eur(b)}</b>`:'<b>qualsiasi prezzo</b>'}${K?` · <b>${K}+ camere</b>`:''}${st==='lib'?' · <b>solo libere</b>':st==='noocc'?' · <b>senza occupate senza titolo</b>':''}<br><b>${r.length}</b> ${r.length===1?'asta trovata':'aste trovate'}${K?' (incluse quelle senza camere nell\'annuncio)':''}`;
+ document.getElementById('sum').innerHTML=`<b>${mil(r.length)}</b> ${r.length===1?'asta trovata':'aste trovate'}${K?' (incluse quelle senza camere nell\'annuncio)':''}`;
  document.getElementById('cnt').textContent='';
  document.getElementById('list').innerHTML=r.length?r.slice(0,shown).map(card).join(''):`<div class="empty">Nessuna asta con questi criteri. Prova ad alzare l'offerta o a scegliere tutta la regione, oppure <a href="${wa('Ciao Maurizio, cerco casa all\'asta ma non trovo quello che cerco. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`;
  document.getElementById('more').hidden=r.length<=shown}
-rs.addEventListener('change',carica);
-['zona','budget','stato','ord'].forEach(id=>document.getElementById(id).addEventListener('change',()=>render(true)));
+['ord'].forEach(id=>document.getElementById(id).addEventListener('change',()=>render(true)));
 document.getElementById('q').addEventListener('input',()=>render(true));
-document.querySelectorAll('.ch button').forEach(b=>b.addEventListener('click',()=>{K=+b.dataset.k;document.querySelectorAll('.ch button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));render(true)}));
+
+const bs=document.getElementById('budget'),ss=document.getElementById('stato');let step=0,fatto=false;
+const conta=o=>A.reduce((n,a)=>n+(match(a,Object.assign({noq:true},o))?1:0),0);
+const CAM=[[0,'Non importa'],[1,'Almeno 1 camera'],[2,'Almeno 2 camere'],[3,'Almeno 3 camere']];
+const STEPS=[
+ {k:'Dove',t:'In quale regione cerchi casa?',i:'Le aste sono organizzate dai tribunali. Parti dalla regione, poi scegli la zona.',gr:true,
+  ops:()=>Object.keys(IDX).sort((a,b)=>a.localeCompare(b,'it')).map(r=>({v:r,l:r,n:IDX[r].n})),cur:()=>rs.value,
+  set:async v=>{if(rs.value!==v){rs.value=v;await carica()}},lab:()=>rs.value},
+ {k:'Zona',t:'In quale zona?',i:'A Roma puoi scegliere il quadrante della città, altrove la provincia. Se non hai preferenze, scegli tutta la regione.',
+  ops:()=>[...zs.options].map(o=>({v:o.value,l:o.text,n:conta({zona:o.value})})).filter(o=>o.n>0||o.v==='tutte'),cur:()=>zs.value,set:v=>{zs.value=v},lab:()=>zs.value==='tutte'?'Tutta la regione':zs.options[zs.selectedIndex].text},
+ {k:'Budget',t:'Quanto puoi offrire al massimo?',i:"Contiamo l'offerta minima, il prezzo più basso che il giudice accetta. Con l'offerta si versa una cauzione, di norma il 10%. Se ti serve il mutuo, verifichiamo prima quanto ti finanzia la banca.",
+  ops:()=>[...bs.options].map(o=>({v:o.value,l:o.text,n:conta({budget:+o.value})})).filter(o=>o.n>0||o.v==='0'),cur:()=>bs.value,set:v=>{bs.value=v},lab:()=>bs.value==='0'?'Qualsiasi cifra':bs.options[bs.selectedIndex].text},
+ {k:'Camere',t:'Quante camere ti servono?',i:"Le camere sono lette dall'annuncio. Le case che non le indicano restano nell'elenco: le verifichiamo nella perizia.",
+  ops:()=>CAM.map(([k,l])=>({v:String(k),l,n:conta({K:k})})),cur:()=>String(K),set:v=>{K=+v},lab:()=>CAM[K][1]},
+ {k:'Stato',t:'La vuoi già libera?',i:'Libera: entri dopo il trasferimento della proprietà. Occupata: lo sgombero lo cura il custode del tribunale, ma i tempi possono allungarsi di qualche mese. Molti annunci non lo dicono: lo leggiamo in perizia.',
+  ops:()=>[['','Va bene anche occupata'],['lib','Solo case libere'],['noocc','Escludi le occupate senza titolo']].map(([v,l])=>({v,l,n:conta({stato:v})})),cur:()=>ss.value,set:v=>{ss.value=v},lab:()=>({'':'Anche occupate',lib:'Solo libere',noocc:'No occupate senza titolo'})[ss.value]}
+];
+function disegna(){const W=document.getElementById('wz');
+ if(fatto){W.className='wz rs';W.innerHTML=`<h3>La tua ricerca</h3><div class="chips">${STEPS.map((s,i)=>`<button type="button" data-s="${i}">${esc(s.lab())}</button>`).join('')}</div>`;
+  W.querySelectorAll('button').forEach(b=>b.onclick=()=>{fatto=false;step=+b.dataset.s;document.getElementById('res').hidden=true;disegna();W.scrollIntoView({behavior:'smooth',block:'start'})});return}
+ const s=STEPS[step];W.className='wz';const cur=s.cur();
+ W.innerHTML=`<div class="bar"><i style="width:${(step+1)/STEPS.length*100}%"></i></div><small class="k">DOMANDA ${step+1} DI ${STEPS.length}</small><h2>${s.t}</h2><p class="inf">${s.i}</p>
+ <div class="ops${s.gr?' gr':''}">${s.ops().map(o=>`<button type="button" class="op" data-v="${esc(o.v)}" aria-pressed="${o.v===cur}">${esc(o.l)}<span>${mil(o.n)}</span></button>`).join('')}</div>
+ <div class="nav">${step?'<button type="button" class="bk">Indietro</button>':''}<button type="button" class="go">${step<STEPS.length-1?'Avanti':'Mostra '+mil(conta({}))+' aste'}</button></div>
+ <button type="button" class="skip">Salta le domande e vedi le aste</button>`;
+ W.querySelectorAll('.op').forEach(b=>b.onclick=async()=>{W.querySelectorAll('.op').forEach(x=>x.setAttribute('aria-pressed',x===b));await s.set(b.dataset.v);setTimeout(avanti,180)});
+ W.querySelector('.go').onclick=avanti;const bk=W.querySelector('.bk');if(bk)bk.onclick=()=>{step--;disegna()};
+ W.querySelector('.skip').onclick=fine}
+function avanti(){if(step<STEPS.length-1){step++;disegna()}else fine()}
+function fine(){fatto=true;disegna();document.getElementById('res').hidden=false;render(true)}
 document.getElementById('more').addEventListener('click',()=>{shown+=20;render(false)});
-carica();
+carica().then(disegna);
 </script>
 
 </body></html>
