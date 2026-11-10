@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="Case all'asta in tutta Italia: offerte minime, valori OMI e consulenza per l'asta e il mutuo.">
+<title>Aste Flow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..700&display=swap">
+<style>
+/* Layout: strumento di ricerca per chi cerca casa all'asta. Filtri in alto, risultati a scheda in colonna, contatto WhatsApp su ogni scheda */
+:root{--bg:#f2f4f6;--card:#fff;--ink:#14202b;--muted:#5b6672;--line:#dce1e6;--brand:#1f4e79;--brand2:#e8eff6;--on:#fff;--wa:#8a4b0a;--wabg:#fdf1dc;--ok:#166534;--okbg:#dcfce7;--font:"Archivo",system-ui,-apple-system,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1319;--card:#17202a;--ink:#e7ecf1;--muted:#9aa6b2;--line:#29363f;--brand:#5f9fd6;--brand2:#1b2a38;--on:#0d1319;--wa:#fcd34d;--wabg:#3a2c0d;--ok:#86efac;--okbg:#14321f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1319;--card:#17202a;--ink:#e7ecf1;--muted:#9aa6b2;--line:#29363f;--brand:#5f9fd6;--brand2:#1b2a38;--on:#0d1319;--wa:#fcd34d;--wabg:#3a2c0d;--ok:#86efac;--okbg:#14321f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--font);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.w{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.ey{margin:0;font-size:12px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--brand)}
+h1{margin:4px 0 6px;font-size:clamp(26px,5vw,34px);line-height:1.1;font-weight:700;font-stretch:88%;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:60ch}
+.f{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);min-width:0}
+.f select,.f input{font:16px var(--font);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;width:100%}
+.f select:focus,.f input:focus{outline:2px solid var(--brand);outline-offset:1px}
+.ch{display:flex;gap:6px;flex-wrap:wrap}
+.ch button{font:600 14px var(--font);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:7px 12px;cursor:pointer}
+.ch button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on)}
+.full{grid-column:1/-1}
+.cnt{font-size:14px;color:var(--muted);margin:0}
+.c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+h2{margin:0;font-size:18px;font-weight:650;line-height:1.25}
+.loc{font-size:13px;color:var(--muted)}
+.tag{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--brand2);color:var(--brand)}
+.tag.lib{background:var(--okbg);color:var(--ok)}.tag.occ{background:var(--wabg);color:var(--wa)}
+.g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.g div{min-width:0}.g b{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.g span{font-size:15px;font-variant-numeric:tabular-nums}
+.money{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;background:var(--brand2);border-radius:10px;padding:9px 12px}
+.money b{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}.money span{font-size:13px;color:var(--muted)}
+details{font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--brand);font-weight:600}
+.a{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.a a{text-align:center;text-decoration:none;font-weight:650;font-size:14px;padding:11px 6px;border-radius:10px}
+.a a.p{background:var(--brand);color:var(--on)}.a a.s{border:1px solid var(--brand);color:var(--brand)}
+.a a:focus-visible,summary:focus-visible,.ch button:focus-visible,.more:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.off{font-size:13px;color:var(--muted)}.off a{color:var(--muted)}
+.more{font:650 15px var(--font);background:var(--card);border:1px solid var(--line);color:var(--brand);border-radius:12px;padding:12px;cursor:pointer}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:20px;text-align:center;color:var(--muted)}
+.foot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+.step{grid-column:1/-1;display:grid;grid-template-columns:30px 1fr;gap:4px 10px;padding-top:12px;border-top:1px solid var(--line)}
+.step:first-of-type{border-top:0;padding-top:0}
+.num{width:28px;height:28px;border-radius:50%;background:var(--brand);color:var(--on);display:grid;place-items:center;font-weight:700;font-size:14px;grid-row:span 3}
+.step h3{margin:2px 0 0;font-size:16px;font-weight:650}
+.info{margin:0;font-size:13.5px;color:var(--muted);line-height:1.45}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.ctl.one{grid-template-columns:1fr}
+.sum{background:var(--brand2);border-radius:10px;padding:10px 12px;font-size:14px}
+.sum b{color:var(--brand)}
+.px{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:var(--brand2);border-radius:10px;padding:10px 12px}
+.px b{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.px span{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.px .big{font-size:21px}
+.px small{display:block;font-size:12px;color:var(--muted);font-weight:500}
+.disc{font-size:13.5px;border-radius:10px;padding:8px 12px;background:var(--okbg);color:var(--ok);font-weight:600}
+.disc.no{background:var(--bg);color:var(--muted);font-weight:500}
+.note{font-size:13.5px;color:var(--muted);margin:0}
+.note b{color:var(--ink)}
+.desc{font-size:14px;margin:0;color:var(--ink)}
+.ref{font-size:12.5px;color:var(--muted)}
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pv div{border-radius:10px;padding:9px 11px;font-size:13.5px;line-height:1.4}
+.pv .pos{background:var(--okbg);color:var(--ok)}.pv .neg{background:var(--wabg);color:var(--wa)}
+.pv b{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.pv ul{margin:0;padding-left:16px}
+@media (max-width:560px){.pv{grid-template-columns:1fr}}
+@media (max-width:560px){.f{grid-template-columns:1fr}.g{grid-template-columns:1fr 1fr}.px{grid-template-columns:1fr 1fr}.px div:first-child{grid-column:1/-1}}
+</style>
+</head><body>
+
+<div class="w">
+ <header>
+  <p class="ey">Aste Flow · Maurizio Basciani</p>
+  <h1>Case all'asta in tutta Italia</h1>
+  <p class="lead">Tutte le abitazioni in vendita all'asta nei tribunali italiani con offerte ancora aperte. Scegli regione, zona e budget: quando una casa ti interessa, scrivimi e ti dico cosa c'è nella perizia.</p>
+ </header>
+ <form class="f" id="f" onsubmit="return false">
+  <div class="step"><span class="num">1</span><h3>Dove cerchi casa</h3>
+   <p class="info">Le aste sono organizzate dai tribunali. Scegli la regione e poi, se vuoi, la provincia. A Roma puoi scegliere anche il quadrante della città.</p>
+   <div class="ctl"><label for="reg">Regione<select id="reg"></select></label><label for="zona">Provincia o zona<select id="zona"></select></label></div></div>
+  <div class="step"><span class="num">2</span><h3>Quanto puoi offrire</h3>
+   <p class="info">Filtriamo sull'<b>offerta minima</b>, cioè il prezzo più basso che il giudice accetta (di solito il 75% del prezzo base). Con l'offerta si versa una cauzione, di norma il 10% di quanto offri. Se ti serve il mutuo, conviene verificare prima quanto ti finanzia la banca: lo facciamo insieme.</p>
+   <div class="ctl one"><label for="budget">Offerta massima<select id="budget"><option value="0">Qualsiasi cifra</option><option value="50000">Fino a 50.000 €</option><option value="80000">Fino a 80.000 €</option><option value="130000">Fino a 130.000 €</option><option value="160000" selected>Fino a 160.000 €</option><option value="200000">Fino a 200.000 €</option><option value="300000">Fino a 300.000 €</option><option value="500000">Fino a 500.000 €</option></select></label></div></div>
+  <div class="step"><span class="num">3</span><h3>Quante camere ti servono</h3>
+   <p class="info">Le camere sono lette dalla descrizione dell'annuncio. Se l'annuncio non le indica, la casa resta nell'elenco: le verifichiamo nella perizia.</p>
+   <div class="ch" role="group" aria-label="Camere"><button type="button" data-k="0" aria-pressed="true">Tutte</button><button type="button" data-k="1" aria-pressed="false">1+</button><button type="button" data-k="2" aria-pressed="false">2+</button><button type="button" data-k="3" aria-pressed="false">3+</button></div></div>
+  <div class="step"><span class="num">4</span><h3>Libera o occupata</h3>
+   <p class="info"><b>Libera</b>: entri in casa dopo il trasferimento della proprietà. <b>Occupata</b> o <b>in liberazione</b>: lo sgombero lo cura il custode del tribunale, ma i tempi possono allungarsi di alcuni mesi. Molti annunci non lo dicono: lo leggiamo in perizia.</p>
+   <div class="ctl one"><label for="stato">Stato della casa<select id="stato"><option value="">Tutte</option><option value="lib">Solo libere</option><option value="noocc">Escludi occupate senza titolo</option></select></label></div></div>
+  <div class="step"><span class="num">5</span><h3>Ordina e cerca</h3>
+   <p class="info">Puoi vedere prima le aste più vicine, le più economiche o quelle con lo sconto più alto rispetto al valore OMI della zona (l'indicatore dell'Agenzia delle Entrate).</p>
+   <div class="ctl"><label for="ord">Ordina per<select id="ord"><option value="d">Data dell'asta</option><option value="m">Prezzo più basso</option><option value="s">Sconto sul valore OMI</option></select></label><label for="q">Via, comune o tribunale<input id="q" type="search" placeholder="Es. Aprilia"></label></div></div>
+ </form>
+ <div class="sum" id="sum" aria-live="polite"></div>
+ <p class="cnt" id="cnt"></p>
+ <div id="list" class="w" style="gap:12px"></div>
+ <button class="more" id="more" type="button" hidden>Mostra altre aste</button>
+ <div class="foot">Dati dal Portale delle Vendite Pubbliche del Ministero della Giustizia, aggiornati al 10/11/2026. Il valore di zona è la quotazione OMI dell'Agenzia delle Entrate (1° semestre 2026) per la superficie indicata nell'annuncio. Prima di offrire leggi sempre la perizia: te la spiego io.<br>WhatsApp: <span style="user-select:all;font-weight:600">327 213 4718</span></div>
+</div>
+<script>
+const IDX={"Sicilia": {"f": "italia/sicilia.json", "n": 1215, "prov": ["Agrigento", "Caltanissetta", "Catania", "Enna", "Messina", "Palermo", "Ragusa", "Siracusa", "Trapani"]}, "Piemonte": {"f": "italia/piemonte.json", "n": 718, "prov": ["Alessandria", "Asti", "Biella", "Cuneo", "Novara", "Torino", "Verbano-Cusio-Ossola", "Vercelli"]}, "Marche": {"f": "italia/marche.json", "n": 452, "prov": ["Ancona", "Ascoli Piceno", "Fermo", "Macerata", "Pesaro e Urbino"]}, "Puglia": {"f": "italia/puglia.json", "n": 602, "prov": ["Bari", "Barletta-Andria-Trani", "Brindisi", "Foggia", "Lecce", "Taranto"]}, "Toscana": {"f": "italia/toscana.json", "n": 605, "prov": ["Arezzo", "Firenze", "Grosseto", "Livorno", "Lucca", "Massa-Carrara", "Pisa", "Pistoia", "Prato", "Siena"]}, "Emilia-Romagna": {"f": "italia/emilia-romagna.json", "n": 261, "prov": ["Bologna", "Ferrara", "Forlì-Cesena", "Modena", "Parma", "Piacenza", "Ravenna", "Reggio Emilia", "Rimini"]}, "Abruzzo": {"f": "italia/abruzzo.json", "n": 297, "prov": ["Chieti", "L'Aquila", "Pescara", "Teramo"]}, "Valle d'Aosta": {"f": "italia/valle-d-aosta.json", "n": 18, "prov": ["Aosta"]}, "Campania": {"f": "italia/campania.json", "n": 581, "prov": ["Avellino", "Benevento", "Caserta", "Napoli", "Salerno"]}, "Veneto": {"f": "italia/veneto.json", "n": 347, "prov": ["Belluno", "Padova", "Rovigo", "Treviso", "Venezia", "Verona", "Vicenza"]}, "Lombardia": {"f": "italia/lombardia.json", "n": 817, "prov": ["Bergamo", "Brescia", "Como", "Cremona", "Lecco", "Lodi", "Mantova", "Milano", "Monza e della Brianza", "Pavia", "Sondrio", "Varese"]}, "Liguria": {"f": "italia/liguria.json", "n": 145, "prov": ["Genova", "Imperia", "La Spezia", "Savona"]}, "Sardegna": {"f": "italia/sardegna.json", "n": 271, "prov": ["Cagliari", "Nuoro", "Oristano", "Sassari", "Sud Sardegna"]}, "Calabria": {"f": "italia/calabria.json", "n": 534, "prov": ["Catanzaro", "Cosenza", "Crotone", "Reggio di Calabria", "Vibo Valentia"]}, "Molise": {"f": "italia/molise.json", "n": 52, "prov": ["Campobasso", "Isernia"]}, "Lazio": {"f": "italia/lazio.json", "n": 791, "prov": ["Frosinone", "Latina", "Rieti", "Roma", "Viterbo"]}, "Friuli-Venezia Giulia": {"f": "italia/friuli-venezia-giulia.json", "n": 41, "prov": ["Gorizia", "Pordenone", "Trieste", "Udine"]}, "Basilicata": {"f": "italia/basilicata.json", "n": 145, "prov": ["Matera", "Potenza"]}, "Trentino-Alto Adige": {"f": "italia/trentino-alto-adige.json", "n": 35, "prov": ["Trento"]}, "Umbria": {"f": "italia/umbria.json", "n": 233, "prov": ["Perugia", "Terni"]}};const NUM="393272134718";let A=[];const cache={};
+const mil=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');const eur=n=>n?mil(n)+' €':'—';
+const dt=s=>{const [y,m,d]=s.split('-');return `${d}/${m}/${y}`};
+const prima=s=>{const x=new Date(s+'T00:00:00');x.setDate(x.getDate()-1);return x.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'})};
+const giorni=s=>{const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(s+'T00:00:00')-t)/864e5)-1};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const wa=t=>`https://wa.me/${NUM}?text=${encodeURIComponent(t)}`;
+const rs=document.getElementById('reg'),zs=document.getElementById('zona');
+rs.innerHTML=Object.keys(IDX).sort((a,b)=>a.localeCompare(b,'it')).map(r=>`<option value="${esc(r)}"${r==='Lazio'?' selected':''}>${esc(r)} (${IDX[r].n})</option>`).join('');
+function zone(){const r=rs.value;let Z=[['tutte','Tutta la regione']];
+ if(r==='Lazio')Z=Z.concat([['Roma nord','Roma nord'],['Roma est','Roma est'],['Roma sud','Roma sud'],['Roma ovest','Roma ovest'],['Ostia e litorale','Ostia e litorale'],['prov:Roma','Provincia di Roma (fuori città)']]);
+ IDX[r].prov.filter(p=>p&&!(r==='Lazio'&&p==='Roma')).forEach(p=>Z.push(['prov:'+p,'Provincia di '+p]));
+ zs.innerHTML=Z.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('')}
+async function carica(){const r=rs.value;zone();document.getElementById('cnt').textContent='Carico le aste…';document.getElementById('list').innerHTML='';
+ try{if(!cache[r]){const x=await fetch(IDX[r].f);if(!x.ok)throw 0;cache[r]=pulisci(await x.json())}A=cache[r];render(true)}
+ catch(e){document.getElementById('cnt').textContent='';document.getElementById('list').innerHTML=`<div class="empty">Non riesco a caricare le aste di questa regione. Riprova tra poco o <a href="${wa('Ciao Maurizio, cerco casa all\'asta in '+r+'. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`}}
+let K=0,shown=20;
+const sconto=a=>a.o&&a.m?Math.round((1-a.m/a.o)*100):null;
+function pulisci(L){L.forEach(a=>{const s=sconto(a);if(s!=null&&(s>60||s<-80))a.o=null});return L}
+const SPIEGA={'Libero':'La casa risulta libera: dopo il trasferimento puoi entrare.','Occupato':'La casa risulta occupata: va verificato in perizia se con un contratto valido o meno.','Occupato senza titolo':'Occupata senza contratto valido: la libera il custode del tribunale.','In liberazione':'Il custode sta già liberando la casa.'};
+function match(a){const z=zs.value,b=+document.getElementById('budget').value,q=document.getElementById('q').value.trim().toLowerCase(),st=document.getElementById('stato').value;
+ if(b&&a.m>b)return false;
+ if(z!=='tutte'){if(z.startsWith('prov:')){const p=z.slice(5);if(a.p!==p)return false;if(p==='Roma'&&a.c==='Roma'&&rs.value==='Lazio')return false}else if(a.z!==z)return false}
+ if(K&&a.k!=null&&a.k<K)return false;
+ if(st==='lib'&&a.s!=='Libero')return false;
+ if(st==='noocc'&&a.s==='Occupato senza titolo')return false;
+ if(q&&!(a.v+' '+a.c+' '+a.t+' '+a.p).toLowerCase().includes(q))return false;return true}
+function punti(a,g){const P=[],N=[];const sc=sconto(a);
+ if(sc!=null&&sc>=20)P.push(`Offerta minima ${sc}% sotto il valore OMI della zona`);
+ else if(sc!=null&&sc<0)N.push(`Offerta minima sopra il valore OMI della zona`);
+ if(a.s==='Libero')P.push('Casa libera');
+ if(a.s==='In liberazione')P.push('Liberazione già avviata dal custode');
+ if(a.s==='Occupato')N.push('Occupata: verificare se con contratto opponibile');
+ if(a.s==='Occupato senza titolo')N.push('Occupata senza titolo: tempi di sgombero');
+ if(a.b&&a.m&&a.m<a.b)P.push(`Si può offrire il ${Math.round((1-a.m/a.b)*100)}% in meno del prezzo base`);
+ if(/ascensore/i.test(a.x)&&!/(senza|privo di|non dotat[oa] di|manca)\s+(di\s+)?ascensore/i.test(a.x))P.push('Ascensore citato nell\'annuncio');
+ if(/(box|garage|posto auto|autorimessa)/i.test(a.x))P.push('Box o posto auto citato');
+ if(/(giardino|terrazz)/i.test(a.x))P.push('Giardino o terrazzo citato');
+ if(/(abus|difformit|sanator|condon|non conform)/i.test(a.x))N.push('L\'annuncio cita difformità o abusi');
+ if(/(nuda propriet|usufrutto|quota\s+(?!pari a 1\/1)\d)/i.test(a.x))N.push('Non è la piena proprietà: controllare la quota');
+ if(/(senza ascensore|privo di ascensore|non dotat[oa] di ascensore)/i.test(a.x))N.push('Senza ascensore');
+ if(!a.q)N.push('Superficie non indicata nell\'annuncio');
+ if(!a.s)N.push('Stato di occupazione da leggere in perizia');
+ if(g<=10)N.push(`Mancano solo ${g} giorni per l'offerta`);
+ return `<div class="pv"><div class="pos"><b>A favore</b>${P.length?`<ul>${P.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'Da valutare con la perizia'}</div><div class="neg"><b>Da verificare</b>${N.length?`<ul>${N.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'Nulla di evidente dall\'annuncio: confermiamo in perizia'}</div></div>`}
+function card(a){const g=giorni(a.d);const st=a.s==='Libero'?'lib':(a.s?'occ':'');const sc=sconto(a);const rib=a.b&&a.m?Math.round((1-a.m/a.b)*100):null;
+ const mqp=a.q&&a.m?Math.round(a.m/a.q):null;
+ return `<article class="c"><div class="top"><div><h2>${esc(a.v||'Indirizzo nell\'annuncio')}</h2><span class="loc">${esc(a.c==='Roma'&&a.z?'Roma · '+a.z:a.c)}${a.p&&a.p!==a.c?' ('+esc(a.p)+')':''} · Tribunale di ${esc(a.t)}</span></div>${a.s?`<span class="tag ${st}">${esc(a.s)}</span>`:''}</div>
+ <div class="px"><div><b>Offerta minima</b><span class="big">${eur(a.m)}</span>${mqp?`<small>${mil(mqp)} €/mq</small>`:''}</div><div><b>Prezzo base</b><span>${eur(a.b)}</span>${rib?`<small>minima −${rib}%</small>`:''}</div><div><b>Cauzione</b><span>${eur(a.m*0.1)}</span><small>10% dell'offerta minima</small></div></div>
+ ${a.o?`<div class="disc${sc>0?'':' no'}">Valore OMI della zona per ${String(a.q).replace('.',',')} mq: circa ${eur(a.o)}${sc>0?` · l'offerta minima è il ${sc}% sotto`:''}</div>`:''}
+ <div class="g"><div><b>Superficie</b><span>${a.q?String(a.q).replace('.',',')+' mq':'in perizia'}</span></div><div><b>Camere</b><span>${a.k??'in perizia'}</span></div><div><b>Data asta</b><span>${dt(a.d)}</span></div><div><b>Offerte entro</b><span>${prima(a.d)}</span><small style="display:block;font-size:12px;color:var(--muted)">tra ${g} giorni</small></div></div>
+ ${punti(a,g)}
+ ${a.s?`<p class="note"><b>Stato:</b> ${esc(SPIEGA[a.s]||a.s)}</p>`:''}
+ ${a.x?`<p class="desc">${esc(a.x.length>320?a.x.slice(0,320)+'…':a.x)}</p>${a.x.length>320?`<details><summary>Leggi tutta la descrizione</summary><p style="margin:6px 0 0">${esc(a.x)}</p></details>`:''}`:''}
+ <div class="a"><a class="p" href="${wa(`Ciao Maurizio, mi interessa l'asta di ${a.v}, ${a.c} (rif. ${a.i}). Mi segui in asta?`)}" target="_blank" rel="noopener">Seguimi in asta</a><a class="s" href="${wa(`Ciao Maurizio, mi serve il mutuo per l'asta di ${a.v}, ${a.c} (rif. ${a.i}).`)}" target="_blank" rel="noopener">Mi serve il mutuo</a></div>
+ <span class="ref">Riferimento ${a.i}</span></article>`}
+function render(reset){if(reset)shown=20;let r=A.filter(match);const o=document.getElementById('ord').value;
+ r=r.slice().sort(o==='m'?(x,y)=>x.m-y.m:o==='s'?(x,y)=>(sconto(y)??-999)-(sconto(x)??-999):(x,y)=>x.d.localeCompare(y.d));
+ const b=+document.getElementById('budget').value,st=document.getElementById('stato').value,zt=zs.options[zs.selectedIndex]?.text||'';
+ document.getElementById('sum').innerHTML=`Stai cercando in <b>${esc(rs.value)}</b>${zs.value!=='tutte'?` · <b>${esc(zt)}</b>`:''} · ${b?`offerta fino a <b>${eur(b)}</b>`:'<b>qualsiasi prezzo</b>'}${K?` · <b>${K}+ camere</b>`:''}${st==='lib'?' · <b>solo libere</b>':st==='noocc'?' · <b>senza occupate senza titolo</b>':''}<br><b>${r.length}</b> ${r.length===1?'asta trovata':'aste trovate'}${K?' (incluse quelle senza camere nell\'annuncio)':''}`;
+ document.getElementById('cnt').textContent='';
+ document.getElementById('list').innerHTML=r.length?r.slice(0,shown).map(card).join(''):`<div class="empty">Nessuna asta con questi criteri. Prova ad alzare l'offerta o a scegliere tutta la regione, oppure <a href="${wa('Ciao Maurizio, cerco casa all\'asta ma non trovo quello che cerco. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`;
+ document.getElementById('more').hidden=r.length<=shown}
+rs.addEventListener('change',carica);
+['zona','budget','stato','ord'].forEach(id=>document.getElementById(id).addEventListener('change',()=>render(true)));
+document.getElementById('q').addEventListener('input',()=>render(true));
+document.querySelectorAll('.ch button').forEach(b=>b.addEventListener('click',()=>{K=+b.dataset.k;document.querySelectorAll('.ch button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));render(true)}));
+document.getElementById('more').addEventListener('click',()=>{shown+=20;render(false)});
+carica();
+</script>
+
+</body></html>
