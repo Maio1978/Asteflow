@@ -137,7 +137,6 @@ function punti(a,g){const P=[],N=[];const sc=sconto(a);
  if(a.s==='In liberazione')P.push('Liberazione già avviata dal custode');
  if(a.s==='Occupato')N.push('Occupata: verificare se con contratto opponibile');
  if(a.s==='Occupato senza titolo')N.push('Occupata senza titolo: tempi di sgombero');
- if(a.b&&a.m&&a.m<a.b)P.push(`Si può offrire il ${Math.round((1-a.m/a.b)*100)}% in meno del prezzo base`);
  if(/ascensore/i.test(a.x)&&!/(senza|privo di|non dotat[oa] di|manca)\s+(di\s+)?ascensore/i.test(a.x))P.push('Ascensore citato nell\'annuncio');
  if(/(box|garage|posto auto|autorimessa)/i.test(a.x))P.push('Box o posto auto citato');
  if(/(giardino|terrazz)/i.test(a.x))P.push('Giardino o terrazzo citato');
