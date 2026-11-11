@@ -4,6 +4,7 @@ CARTELLA_BLOCCHI: file con i blocchi '#N#...' restituiti da scarica.js (anche de
 Scrive CARTELLA_USCITA/aste-italia.html e CARTELLA_USCITA/italia/<regione>.json"""
 import json, re, sys, os, sqlite3, datetime, glob
 blk_dir, omi_db, tpl, out = sys.argv[1:5]
+PERIZIE = json.load(open(sys.argv[5], encoding="utf-8")) if len(sys.argv) > 5 and os.path.exists(sys.argv[5]) else {}
 NUMERI = {"una": 1, "due": 2, "tre": 3, "quattro": 4, "cinque": 5}
 CENTRO = (41.9028, 12.4964)
 def testo_blocco(raw):
@@ -126,7 +127,15 @@ for (i, trib, via, citta, prov, lat, lon, base, minima, data, disp, desc) in row
     oi = omi_info(citta, lat, lon)
     o = round((oi['a'] + oi['b']) / 2 * mq, -3) if (oi and oi['t'] == 'z' and mq) else None
     zona = zona_roma(lat, lon, via) if (citta or "").lower() == "roma" else (citta or "").title()
-    by.setdefault(reg, []).append(dict(i=i, v=(via or "").strip(" ,"), c=(citta or "").title(), z=zona, p=(prov or "").strip(), t=(trib or "").title(), m=minima, b=base, d=data, k=cam, n=nv, q=mq, o=o, w=oi, s=OCC.get(disp, ""), x=desc))
+    pz = PERIZIE.get(str(i))
+    if pz:
+        mq = pz.get("q", mq); cam = pz.get("k", cam); nv = pz.get("n", nv)
+        if pz.get("s"): disp = {"Libero": "LIBER", "Occupato": "OCCUP", "Occupato senza titolo": "OCCST", "In liberazione": "INCOR"}.get(pz["s"], disp)
+        o = round((oi['a'] + oi['b']) / 2 * mq, -3) if (oi and oi['t'] == 'z' and mq) else None
+    rec = dict(i=i, v=(via or "").strip(" ,"), c=(citta or "").title(), z=zona, p=(prov or "").strip(), t=(trib or "").title(), m=minima, b=base, d=data, k=cam, n=nv, q=mq, o=o, w=oi, s=OCC.get(disp, ""), x=desc)
+    if pz:
+        rec.update(pz=1, bg=pz.get("bg"), pi=pz.get("pi"))
+    by.setdefault(reg, []).append(rec)
 os.makedirs(os.path.join(out, "italia"), exist_ok=True); idx = {}
 for reg, L in by.items():
     L.sort(key=lambda a: a["d"]); slug = re.sub(r"[^a-z]+", "-", reg.lower()).strip("-")

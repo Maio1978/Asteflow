@@ -106,13 +106,15 @@ details{font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--bra
 [hidden]{display:none!important}
 html,body{overflow-x:hidden}
 .lnk{margin-top:6px;background:none;border:0;padding:0;color:var(--brand);font:600 14px var(--font);text-decoration:underline;cursor:pointer;text-align:left}
+.miss{background:var(--wabg);color:var(--wa);border-radius:12px;padding:10px 12px;font-size:14px;display:grid;gap:6px}
+.miss b{color:var(--wa)}.miss a{background:var(--wa);color:#fff;text-align:center;text-decoration:none;font-weight:700;border-radius:10px;padding:10px}
 </style>
 </head><body>
 
 <div class="w">
  <header>
   <h1>Case all'asta in tutta Italia</h1>
-  <p class="lead">Le abitazioni all'asta nei tribunali italiani con offerte ancora aperte e scheda completa: metri quadri, camere e valori OMI della zona. Rispondi a 5 domande veloci e trovi le case adatte a te: quando una ti interessa, scrivimi e ti dico cosa c'è nella perizia.</p>
+  <p class="lead">Tutte le abitazioni all'asta nei tribunali italiani con offerte ancora aperte, con i valori OMI della zona. Rispondi a 5 domande veloci e trovi le case adatte a te: quando una ti interessa, scrivimi e ti dico cosa c'è nella perizia.</p>
  </header>
  <section class="wz" id="wz" aria-live="polite"></section>
  <form id="f" hidden onsubmit="return false">
@@ -144,7 +146,7 @@ function zone(){const r=rs.value;let Z=[['tutte','Tutta la regione']];
  IDX[r].prov.filter(p=>p&&!(r==='Lazio'&&p==='Roma')).forEach(p=>Z.push(['prov:'+p,'Provincia di '+p]));
  zs.innerHTML=Z.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('')}
 async function carica(){const r=rs.value;zone();document.getElementById('cnt').textContent='Carico le aste…';document.getElementById('list').innerHTML='';
- try{if(!cache[r]){const x=await fetch(IDX[r].f);if(!x.ok)throw 0;cache[r]=pulisci(await x.json())}TUTTE=cache[r];A=completa?TUTTE.filter(ok):TUTTE;render(true)}
+ try{if(!cache[r]){const x=await fetch(IDX[r].f);if(!x.ok)throw 0;cache[r]=pulisci(await x.json())}TUTTE=cache[r];A=TUTTE;render(true)}
  catch(e){document.getElementById('cnt').textContent='';document.getElementById('list').innerHTML=`<div class="empty">Non riesco a caricare le aste di questa regione. Riprova tra poco o <a href="${wa('Ciao Maurizio, cerco casa all\'asta in '+r+'. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`}}
 var K=0;let shown=20;let TUTTE=[],completa=true;const ok=a=>a.q&&(a.k!=null||a.n!=null);
 const sconto=a=>a.o&&a.m?Math.round((1-a.m/a.o)*100):null;
@@ -183,21 +185,22 @@ function omibox(a,sc,mqp){const w=a.w;if(!w)return '';
  if(mqp)rows.push(`<div><b>Offerta minima</b><span>${mil(mqp)} €/mq</span></div>`);
  const fondo=a.o?`<p class="ot">Per ${dec(a.q)} mq la zona vale circa <b>${eur(a.o)}</b>${sc>0?` · l'offerta minima è il <b>${sc}% sotto</b>`:''}</p>`:(a.q?'':`<p class="ot">Con i metri quadri della perizia calcoliamo il valore della casa.</p>`);
  return `<div class="omi${sc>0?' ok':''}"><p class="oh">${tit}</p><div class="og">${rows.join('')}</div>${fondo}</div>`}
+const manca=a=>!a.q&&a.k==null&&a.n==null?'Metri quadri e camere':!a.q?'Metri quadri':'Camere';
 function card(a){const g=giorni(a.d);const st=a.s==='Libero'?'lib':(a.s?'occ':'');const sc=sconto(a);const rib=a.b&&a.m?Math.round((1-a.m/a.b)*100):null;
  const mqp=a.q&&a.m?Math.round(a.m/a.q):null;
- return `<article class="c"><div class="top"><div><h2>${esc(a.v||'Indirizzo nell\'annuncio')}</h2><span class="loc">${esc(a.c==='Roma'&&a.z?'Roma · '+a.z:a.c)}${a.p&&a.p!==a.c?' ('+esc(a.p)+')':''} · Tribunale di ${esc(a.t)}</span></div>${a.s?`<span class="tag ${st}">${esc(a.s)}</span>`:''}</div>
+ return `<article class="c"><div class="top"><div><h2>${esc(a.v||'Indirizzo nell\'annuncio')}</h2>${a.pz?'<span class="tag lib" style="display:inline-block;margin-bottom:4px">✓ Dati letti dalla perizia</span><br>':''}<span class="loc">${esc(a.c==='Roma'&&a.z?'Roma · '+a.z:a.c)}${a.p&&a.p!==a.c?' ('+esc(a.p)+')':''} · Tribunale di ${esc(a.t)}</span></div>${a.s?`<span class="tag ${st}">${esc(a.s)}</span>`:''}</div>
  <div class="px"><div><b>Offerta minima</b><span class="big">${eur(a.m)}</span>${mqp?`<small>${mil(mqp)} €/mq</small>`:''}</div><div><b>Prezzo base</b><span>${eur(a.b)}</span>${rib?`<small>minima −${rib}%</small>`:''}</div><div><b>Cauzione</b><span>${eur(a.m*0.1)}</span><small>10% dell'offerta minima</small></div></div>
  ${omibox(a,sc,mqp)}
- <div class="g"><div><b>Superficie</b><span>${a.q?String(a.q).replace('.',',')+' mq':'in perizia'}</span></div><div><b>${a.k!=null||a.n==null?'Camere':'Vani'}</b><span>${a.k!=null?a.k:a.n!=null?String(a.n).replace('.',','):'in perizia'}</span>${a.k==null&&a.n!=null?'<small style="display:block;font-size:12px;color:var(--muted)">dal catasto, camere in perizia</small>':''}</div><div><b>Data asta</b><span>${dt(a.d)}</span></div><div><b>Offerte entro</b><span>${prima(a.d)}</span><small style="display:block;font-size:12px;color:var(--muted)">tra ${g} giorni</small></div></div>
+ <div class="g"><div><b>Superficie</b><span>${a.q?String(a.q).replace('.',',')+' mq':'in perizia'}</span></div><div><b>${a.k!=null||a.n==null?'Camere':'Vani'}</b><span>${a.k!=null?a.k:a.n!=null?String(a.n).replace('.',','):'in perizia'}</span>${a.k==null&&a.n!=null?'<small style="display:block;font-size:12px;color:var(--muted)">dal catasto, camere in perizia</small>':''}</div>${a.bg!=null?`<div><b>Bagni</b><span>${a.bg}</span></div>`:''}${a.pi!=null?`<div><b>Piano</b><span>${esc(a.pi)}</span></div>`:''}<div><b>Data asta</b><span>${dt(a.d)}</span></div><div><b>Offerte entro</b><span>${prima(a.d)}</span><small style="display:block;font-size:12px;color:var(--muted)">tra ${g} giorni</small></div></div>
  ${punti(a,g)}
  ${a.s?`<p class="note"><b>Stato:</b> ${esc(SPIEGA[a.s]||a.s)}</p>`:''}
  ${a.x?`<p class="desc">${esc(a.x.length>320?a.x.slice(0,320)+'…':a.x)}</p>${a.x.length>320?`<details><summary>Leggi tutta la descrizione</summary><p style="margin:6px 0 0">${esc(a.x)}</p></details>`:''}`:''}
- <div class="a"><a class="p" href="${wa(`Ciao Maurizio, mi interessa l'asta di ${a.v}, ${a.c} (rif. ${a.i}). Mi segui in asta?`)}" target="_blank" rel="noopener">Seguimi in asta</a><a class="s" href="${wa(`Ciao Maurizio, mi serve il mutuo per l'asta di ${a.v}, ${a.c} (rif. ${a.i}).`)}" target="_blank" rel="noopener">Mi serve il mutuo</a></div>
+ ${ok(a)?'':`<div class="miss"><b>${manca(a)} in perizia</b>L'annuncio non li riporta: te li mando io leggendo la perizia, gratis.<a href="${wa(`Ciao Maurizio, mi mandi ${manca(a).toLowerCase()} dell'asta di ${a.v}, ${a.c} (rif. ${a.i})?`)}" target="_blank" rel="noopener">Chiedimi ${manca(a).toLowerCase()}</a></div>`}<div class="a"><a class="p" href="${wa(`Ciao Maurizio, mi interessa l'asta di ${a.v}, ${a.c} (rif. ${a.i}). Mi segui in asta?`)}" target="_blank" rel="noopener">Seguimi in asta</a><a class="s" href="${wa(`Ciao Maurizio, mi serve il mutuo per l'asta di ${a.v}, ${a.c} (rif. ${a.i}).`)}" target="_blank" rel="noopener">Mi serve il mutuo</a></div>
  <span class="ref">Riferimento ${a.i}</span></article>`}
 function render(reset){if(reset)shown=20;let r=A.filter(match);const o=document.getElementById('ord').value;
- r=r.slice().sort(o==='m'?(x,y)=>x.m-y.m:o==='s'?(x,y)=>(sconto(y)??-999)-(sconto(x)??-999):(x,y)=>x.d.localeCompare(y.d));
+ const cmp=o==='m'?(x,y)=>x.m-y.m:o==='s'?(x,y)=>(sconto(y)??-999)-(sconto(x)??-999):(x,y)=>x.d.localeCompare(y.d);r=r.slice().sort((x,y)=>((ok(y)?1:0)-(ok(x)?1:0))||cmp(x,y));
  const b=+document.getElementById('budget').value,st=document.getElementById('stato').value,zt=zs.options[zs.selectedIndex]?.text||'';
- const inc=completa?TUTTE.filter(a=>!ok(a)&&match(a)).length:0;document.getElementById('sum').innerHTML=`<b>${mil(r.length)}</b> ${r.length===1?'asta con scheda completa':'aste con scheda completa'} (metri quadri e camere)${inc?`<br><button type="button" class="lnk" id="inc">Mostra anche ${mil(inc)} aste senza metratura nell'annuncio</button>`:''}`;const ib=document.getElementById('inc');if(ib)ib.onclick=()=>{completa=false;A=TUTTE;render(true)};
+ const nc=r.filter(ok).length;document.getElementById('sum').innerHTML=`<b>${mil(r.length)}</b> ${r.length===1?'asta trovata':'aste trovate'} · <b>${mil(nc)}</b> con metri quadri e camere, mostrate per prime${r.length>nc?`. Per le altre ti mando io i dati della perizia.`:''}`;
  document.getElementById('cnt').textContent='';
  document.getElementById('list').innerHTML=r.length?r.slice(0,shown).map(card).join(''):`<div class="empty">Nessuna asta con questi criteri. Prova ad alzare l'offerta o a scegliere tutta la regione, oppure <a href="${wa('Ciao Maurizio, cerco casa all\'asta ma non trovo quello che cerco. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`;
  document.getElementById('more').hidden=r.length<=shown}
@@ -209,7 +212,7 @@ const conta=o=>A.reduce((n,a)=>n+(match(a,Object.assign({noq:true},o))?1:0),0);
 const CAM=[[0,'Non importa'],[1,'Almeno 1 camera'],[2,'Almeno 2 camere'],[3,'Almeno 3 camere']];
 const STEPS=[
  {k:'Dove',t:'In quale regione cerchi casa?',i:'Le aste sono organizzate dai tribunali. Parti dalla regione, poi scegli la zona.',gr:true,
-  ops:()=>Object.keys(IDX).sort((a,b)=>a.localeCompare(b,'it')).map(r=>({v:r,l:r,n:IDX[r].nc??IDX[r].n})),cur:()=>rs.value,
+  ops:()=>Object.keys(IDX).sort((a,b)=>a.localeCompare(b,'it')).map(r=>({v:r,l:r,n:IDX[r].n})),cur:()=>rs.value,
   set:async v=>{if(rs.value!==v){rs.value=v;await carica()}},lab:()=>rs.value},
  {k:'Zona',t:'In quale zona?',i:'A Roma puoi scegliere il quadrante della città, altrove la provincia. Se non hai preferenze, scegli tutta la regione.',
   ops:()=>[...zs.options].map(o=>({v:o.value,l:o.text,n:conta({zona:o.value})})).filter(o=>o.n>0||o.v==='tutte'),cur:()=>zs.value,set:v=>{zs.value=v},lab:()=>zs.value==='tutte'?'Tutta la regione':zs.options[zs.selectedIndex].text},
