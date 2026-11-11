@@ -100,11 +100,15 @@ details{font-size:14px;color:var(--muted)}summary{cursor:pointer;color:var(--bra
 .omi .og span{font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
 .omi .ot{margin:0;font-size:13.5px;color:var(--ink)}
 .omi.ok .ot,.omi.ok .oh{color:var(--ok)}
+.tb label,.tb input,.tb select{min-width:0}
+[hidden]{display:none!important}
+html,body{overflow-x:hidden}
+.lnk{margin-top:6px;background:none;border:0;padding:0;color:var(--brand);font:600 14px var(--font);text-decoration:underline;cursor:pointer;text-align:left}
 </style>
 <div class="w">
  <header>
   <h1>Case all'asta in tutta Italia</h1>
-  <p class="lead">Tutte le abitazioni in vendita all'asta nei tribunali italiani con offerte ancora aperte. Rispondi a 5 domande veloci e trovi le case adatte a te: quando una ti interessa, scrivimi e ti dico cosa c'è nella perizia.</p>
+  <p class="lead">Le abitazioni all'asta nei tribunali italiani con offerte ancora aperte e scheda completa: metri quadri, camere e valori OMI della zona. Rispondi a 5 domande veloci e trovi le case adatte a te: quando una ti interessa, scrivimi e ti dico cosa c'è nella perizia.</p>
  </header>
  <section class="wz" id="wz" aria-live="polite"></section>
  <form id="f" hidden onsubmit="return false">
@@ -136,9 +140,9 @@ function zone(){const r=rs.value;let Z=[['tutte','Tutta la regione']];
  IDX[r].prov.filter(p=>p&&!(r==='Lazio'&&p==='Roma')).forEach(p=>Z.push(['prov:'+p,'Provincia di '+p]));
  zs.innerHTML=Z.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('')}
 async function carica(){const r=rs.value;zone();document.getElementById('cnt').textContent='Carico le aste…';document.getElementById('list').innerHTML='';
- try{if(!cache[r]){const x=await fetch(IDX[r].f);if(!x.ok)throw 0;cache[r]=pulisci(await x.json())}A=cache[r];render(true)}
+ try{if(!cache[r]){const x=await fetch(IDX[r].f);if(!x.ok)throw 0;cache[r]=pulisci(await x.json())}TUTTE=cache[r];A=completa?TUTTE.filter(ok):TUTTE;render(true)}
  catch(e){document.getElementById('cnt').textContent='';document.getElementById('list').innerHTML=`<div class="empty">Non riesco a caricare le aste di questa regione. Riprova tra poco o <a href="${wa('Ciao Maurizio, cerco casa all\'asta in '+r+'. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`}}
-var K=0;let shown=20;
+var K=0;let shown=20;let TUTTE=[],completa=true;const ok=a=>a.q&&(a.k!=null||a.n!=null);
 const sconto=a=>a.o&&a.m?Math.round((1-a.m/a.o)*100):null;
 function pulisci(L){L.forEach(a=>{const s=sconto(a);if(s!=null&&(s>60||s<-80))a.o=null});return L}
 const SPIEGA={'Libero':'La casa risulta libera: dopo il trasferimento puoi entrare.','Occupato':'La casa risulta occupata: va verificato in perizia se con un contratto valido o meno.','Occupato senza titolo':'Occupata senza contratto valido: la libera il custode del tribunale.','In liberazione':'Il custode sta già liberando la casa.'};
@@ -189,7 +193,7 @@ function card(a){const g=giorni(a.d);const st=a.s==='Libero'?'lib':(a.s?'occ':''
 function render(reset){if(reset)shown=20;let r=A.filter(match);const o=document.getElementById('ord').value;
  r=r.slice().sort(o==='m'?(x,y)=>x.m-y.m:o==='s'?(x,y)=>(sconto(y)??-999)-(sconto(x)??-999):(x,y)=>x.d.localeCompare(y.d));
  const b=+document.getElementById('budget').value,st=document.getElementById('stato').value,zt=zs.options[zs.selectedIndex]?.text||'';
- document.getElementById('sum').innerHTML=`<b>${mil(r.length)}</b> ${r.length===1?'asta trovata':'aste trovate'}${K?' (incluse quelle senza camere nell\'annuncio)':''}`;
+ const inc=completa?TUTTE.filter(a=>!ok(a)&&match(a)).length:0;document.getElementById('sum').innerHTML=`<b>${mil(r.length)}</b> ${r.length===1?'asta con scheda completa':'aste con scheda completa'} (metri quadri e camere)${inc?`<br><button type="button" class="lnk" id="inc">Mostra anche ${mil(inc)} aste senza metratura nell'annuncio</button>`:''}`;const ib=document.getElementById('inc');if(ib)ib.onclick=()=>{completa=false;A=TUTTE;render(true)};
  document.getElementById('cnt').textContent='';
  document.getElementById('list').innerHTML=r.length?r.slice(0,shown).map(card).join(''):`<div class="empty">Nessuna asta con questi criteri. Prova ad alzare l'offerta o a scegliere tutta la regione, oppure <a href="${wa('Ciao Maurizio, cerco casa all\'asta ma non trovo quello che cerco. Mi aiuti?')}" target="_blank" rel="noopener">scrivimi su WhatsApp</a>.</div>`;
  document.getElementById('more').hidden=r.length<=shown}
@@ -201,7 +205,7 @@ const conta=o=>A.reduce((n,a)=>n+(match(a,Object.assign({noq:true},o))?1:0),0);
 const CAM=[[0,'Non importa'],[1,'Almeno 1 camera'],[2,'Almeno 2 camere'],[3,'Almeno 3 camere']];
 const STEPS=[
  {k:'Dove',t:'In quale regione cerchi casa?',i:'Le aste sono organizzate dai tribunali. Parti dalla regione, poi scegli la zona.',gr:true,
-  ops:()=>Object.keys(IDX).sort((a,b)=>a.localeCompare(b,'it')).map(r=>({v:r,l:r,n:IDX[r].n})),cur:()=>rs.value,
+  ops:()=>Object.keys(IDX).sort((a,b)=>a.localeCompare(b,'it')).map(r=>({v:r,l:r,n:IDX[r].nc??IDX[r].n})),cur:()=>rs.value,
   set:async v=>{if(rs.value!==v){rs.value=v;await carica()}},lab:()=>rs.value},
  {k:'Zona',t:'In quale zona?',i:'A Roma puoi scegliere il quadrante della città, altrove la provincia. Se non hai preferenze, scegli tutta la regione.',
   ops:()=>[...zs.options].map(o=>({v:o.value,l:o.text,n:conta({zona:o.value})})).filter(o=>o.n>0||o.v==='tutte'),cur:()=>zs.value,set:v=>{zs.value=v},lab:()=>zs.value==='tutte'?'Tutta la regione':zs.options[zs.selectedIndex].text},

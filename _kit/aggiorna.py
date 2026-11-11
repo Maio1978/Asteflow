@@ -131,7 +131,7 @@ os.makedirs(os.path.join(out, "italia"), exist_ok=True); idx = {}
 for reg, L in by.items():
     L.sort(key=lambda a: a["d"]); slug = re.sub(r"[^a-z]+", "-", reg.lower()).strip("-")
     json.dump(L, open(os.path.join(out, "italia", slug + ".json"), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    idx[reg] = dict(f=f"italia/{slug}.json", n=len(L), prov=sorted({a["p"] for a in L}))
+    idx[reg] = dict(f=f"italia/{slug}.json", n=len(L), nc=sum(1 for a in L if a["q"] and (a["k"] is not None or a["n"] is not None)), prov=sorted({a["p"] for a in L}))
 h = open(tpl, encoding="utf-8").read().replace("%%IDX_JSON%%", json.dumps(idx, ensure_ascii=False)).replace("%%DATA%%", oggi.strftime("%d/%m/%Y"))
 open(os.path.join(out, "aste-italia.html"), "w", encoding="utf-8").write(h)
 # versione per il sito asteflow.it (GitHub Pages): documento completo
