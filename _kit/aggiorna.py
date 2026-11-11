@@ -4,6 +4,7 @@ CARTELLA_BLOCCHI: file con i blocchi '#N#...' restituiti da scarica.js (anche de
 Scrive CARTELLA_USCITA/aste-italia.html e CARTELLA_USCITA/italia/<regione>.json"""
 import json, re, sys, os, sqlite3, datetime, glob
 blk_dir, omi_db, tpl, out = sys.argv[1:5]
+AG = json.load(open(sys.argv[6], encoding="utf-8")) if len(sys.argv) > 6 and os.path.exists(sys.argv[6]) else []
 PERIZIE = json.load(open(sys.argv[5], encoding="utf-8")) if len(sys.argv) > 5 and os.path.exists(sys.argv[5]) else {}
 NUMERI = {"una": 1, "due": 2, "tre": 3, "quattro": 4, "cinque": 5}
 CENTRO = (41.9028, 12.4964)
@@ -116,6 +117,37 @@ def omi_info(citta, lat, lon):
                 return dict(t="z", z=z, zd=(d[0] if d else "") or "", a=vals[0][1], b=vals[0][2], la=vals[0][3], lb=vals[0][4])
             return dict(t="c", a=min(v[1] for v in vals), b=max(v[2] for v in vals), la=min(v[3] or 0 for v in vals) or None, lb=max(v[4] or 0 for v in vals) or None)
     return None
+
+import unicodedata
+GEN = r"^(via|viale|v\.?le|v\.|piazza|p\.zza|piazzale|largo|corso|c\.so|vicolo|strada|contrada|c\.da|localita|loc\.|frazione|fraz\.|borgo|traversa|vico|circonvallazione)\s+"
+def _nz(s):
+    s = unicodedata.normalize("NFKD", (s or "").lower()).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9 ]+", " ", s).strip()
+def chiave(via, citta):
+    v = _nz(via.split(",")[0] if "," in (via or "") and not re.match(r"^\D+,\s*\d", via or "") else via)
+    full = _nz(via)
+    civ = re.search(r"\b(\d{1,4})\b", full)
+    nome = re.sub(GEN, "", _nz((via or "").split(",")[0]))
+    nome = re.sub(r"\b\d+\w*\b", "", nome).strip()
+    nome = " ".join(w for w in nome.split() if len(w) > 2)
+    return (_nz(citta), nome, civ.group(1) if civ else "")
+AGIDX = {}
+for r in AG:
+    ind, citta = r[1], r[2]
+    via = (ind or "").split(",")
+    k = chiave(",".join(via[:2]) if len(via) > 1 and re.match(r"^\s*\d", via[1]) else via[0], citta)
+    AGIDX.setdefault(k, []).append(r)
+    AGIDX.setdefault(k[:2] + ("",), []).append(r)
+DISP_AG = {"LIBERO": "LIBER", "OCCUPATO": "OCCUP", "IN CORSO DI LIBERAZIONE": "INCOR", "OCCUPATO SENZA TITOLO": "OCCST", "OCCUPATO DAL DEBITORE": "OCCUP", "OCCUPATO DA TERZI CON TITOLO": "OCCUP", "OCCUPATO DA TERZI SENZA TITOLO": "OCCST"}
+def cerca_ag(via, citta):
+    k = chiave(via, citta)
+    if not k[1]: return None
+    c = AGIDX.get(k) or []
+    if len(c) == 1: return c[0]
+    if not c and k[2] == "":
+        c = AGIDX.get(k[:2] + ("",)) or []
+        if len(c) == 1: return c[0]
+    return None
 oggi = datetime.date.today(); lim = (oggi + datetime.timedelta(days=2)).isoformat()
 by, seen = {}, set()
 for (i, trib, via, citta, prov, lat, lon, base, minima, data, disp, desc) in rows:
@@ -127,12 +159,20 @@ for (i, trib, via, citta, prov, lat, lon, base, minima, data, disp, desc) in row
     oi = omi_info(citta, lat, lon)
     o = round((oi['a'] + oi['b']) / 2 * mq, -3) if (oi and oi['t'] == 'z' and mq) else None
     zona = zona_roma(lat, lon, via) if (citta or "").lower() == "roma" else (citta or "").title()
+    ag = cerca_ag(via, citta) if AG else None
+    if ag:
+        if ag[7] and 20 <= ag[7] <= 1000: mq = ag[7]
+        if ag[8] and nv is None: nv = ag[8]
+        if ag[11] and disp in ("", "NON_SPECIFICATA"): disp = DISP_AG.get(ag[11].upper(), disp)
+        o = round((oi['a'] + oi['b']) / 2 * mq, -3) if (oi and oi['t'] == 'z' and mq) else None
     pz = PERIZIE.get(str(i))
     if pz:
         mq = pz.get("q", mq); cam = pz.get("k", cam); nv = pz.get("n", nv)
         if pz.get("s"): disp = {"Libero": "LIBER", "Occupato": "OCCUP", "Occupato senza titolo": "OCCST", "In liberazione": "INCOR"}.get(pz["s"], disp)
         o = round((oi['a'] + oi['b']) / 2 * mq, -3) if (oi and oi['t'] == 'z' and mq) else None
     rec = dict(i=i, v=(via or "").strip(" ,"), c=(citta or "").title(), z=zona, p=(prov or "").strip(), t=(trib or "").title(), m=minima, b=base, d=data, k=cam, n=nv, q=mq, o=o, w=oi, s=OCC.get(disp, ""), x=desc)
+    if ag:
+        rec.update(ag=1, bg=ag[9], pi=ag[10], pf=ag[15])
     if pz:
         rec.update(pz=1, bg=pz.get("bg"), pi=pz.get("pi"))
     by.setdefault(reg, []).append(rec)
