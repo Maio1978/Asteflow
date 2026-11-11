@@ -150,7 +150,9 @@ def cerca_ag(via, citta):
     return None
 oggi = datetime.date.today(); lim = (oggi + datetime.timedelta(days=2)).isoformat()
 by, seen = {}, set()
-for (i, trib, via, citta, prov, lat, lon, base, minima, data, disp, desc) in rows:
+for row in rows:
+    (i, trib, via, citta, prov, lat, lon, base, minima, data, disp, desc) = row[:12]
+    ora, rialzo, proc, catb, lotto = (list(row[12:17]) + [None] * 5)[:5]
     if i in seen or (data or "") < lim: continue
     seen.add(i)
     reg = P2R.get((prov or "").strip().lower())
@@ -171,6 +173,11 @@ for (i, trib, via, citta, prov, lat, lon, base, minima, data, disp, desc) in row
         if pz.get("s"): disp = {"Libero": "LIBER", "Occupato": "OCCUP", "Occupato senza titolo": "OCCST", "In liberazione": "INCOR"}.get(pz["s"], disp)
         o = round((oi['a'] + oi['b']) / 2 * mq, -3) if (oi and oi['t'] == 'z' and mq) else None
     rec = dict(i=i, v=(via or "").strip(" ,"), c=(citta or "").title(), z=zona, p=(prov or "").strip(), t=(trib or "").title(), m=minima, b=base, d=data, k=cam, n=nv, q=mq, o=o, w=oi, s=OCC.get(disp, ""), x=desc)
+    if ora: rec['h'] = ora
+    if rialzo: rec['r'] = rialzo
+    if proc: rec['pr'] = proc
+    if catb: rec['tb'] = catb
+    if lat and lon: rec['la'] = round(lat, 5); rec['lo'] = round(lon, 5)
     if ag:
         rec.update(ag=1, bg=ag[9], pi=ag[10], pf=ag[15])
     if pz:
